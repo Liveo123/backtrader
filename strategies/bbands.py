@@ -8,7 +8,7 @@ import backtrader as bt
 
 # Create a Stratey
 class BBands(bt.Strategy):
-    params = (('BBandsperiod', 20),)
+    params = (('BBandsperiod', 19),)
 
     def log(self, txt, dt=None):
         ''' Logging function fot this strategy'''
@@ -25,9 +25,6 @@ class BBands(bt.Strategy):
         self.buycomm = None
         self.redline = None
         self.blueline = None
-
-        # Add a BBand indicator
-        self.bband = bt.indicators.BBands(self.datas[0], period=self.params.BBandsperiod)
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -83,12 +80,14 @@ class BBands(bt.Strategy):
             self.log('BUY CREATE, %.2f' % self.dataclose[0])
             # Keep track of the created order to avoid a 2nd order
             self.order = self.buy()
+            # self.sell(exectype=bt.Order.StopTrail, trailamount=0.02)
 
         if self.dataclose > self.bband.lines.top and not self.position:
             # BUY, BUY, BUY!!! (with all possible default parameters)
             self.log('BUY CREATE, %.2f' % self.dataclose[0])
             # Keep track of the created order to avoid a 2nd order
             self.order = self.buy()
+            # self.sell(exectype=bt.Order.StopTrail, trailamount=0.02)
 
         if self.dataclose < self.bband.lines.mid and self.position and self.blueline:
             # SELL, SELL, SELL!!! (with all possible default parameters)

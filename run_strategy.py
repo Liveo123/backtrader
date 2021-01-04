@@ -7,6 +7,7 @@ from strategies.BuyHold import BuyHold
 from strategies.strategy import TestStrategy
 from strategies.rsimean import RSIMean
 from strategies.bbands import BBands
+from strategies.stoploss import ManualStopOrStopTrail
 
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
@@ -21,11 +22,11 @@ if __name__ == '__main__':
     # add OHLC data feed
     # feed = bt.feeds.PandasData(dataname=prices)
     feed = bt.feeds.YahooFinanceData(
-        dataname='TTSH',
+        dataname='ADBE',
         # Do not pass values before this date
-        fromdate=datetime.datetime(2019, 1, 1),
+        fromdate=datetime.datetime(2020, 1, 1),
         # Do not pass values after this date
-        todate=datetime.datetime(2019, 6, 30),
+        todate=datetime.datetime(2020, 12, 31),
         reverse=False)
 
     cerebro.adddata(feed)
@@ -35,7 +36,8 @@ if __name__ == '__main__':
         "buy_hold": BuyHold,
         "strategy": TestStrategy,
         "rsi_mean": RSIMean,
-        "bbands": BBands
+        "bbands": BBands,
+        "stop_loss": ManualStopOrStopTrail
     }
 
     # parse command line arguments
@@ -50,10 +52,10 @@ if __name__ == '__main__':
     cerebro.addstrategy(strategy=strategies[args.strategy])
 
     # Add a FixedSize sizer according to the stake
-    cerebro.addsizer(bt.sizers.AllInSizer)
 
 
     cerebro.broker.setcommission(commission=0.000)  # 0.5% of the operation value
+    cerebro.addsizer(bt.sizers.AllInSizer)
 
     cerebro.run()
 
@@ -64,4 +66,4 @@ if __name__ == '__main__':
     roi = (cerebro.broker.get_value() / START_VALUE) - 1.0
     print('ROI:        {:.2f}%'.format(100.0 * roi))
 
-    # cerebro.plot()
+    cerebro.plot()
