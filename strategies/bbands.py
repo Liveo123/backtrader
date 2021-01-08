@@ -26,6 +26,9 @@ class BBands(bt.Strategy):
         self.redline = None
         self.blueline = None
 
+        # Add a BBand indicator
+        self.bband = bt.indicators.BBands(self.datas[0], period=self.params.BBandsperiod)
+
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
             # Buy/Sell order submitted/accepted to/by broker - Nothing to do

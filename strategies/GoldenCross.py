@@ -10,16 +10,16 @@ class GoldenCross(bt.Strategy):
               ('ticker', 'SPY'))
 
     def __init__(self):
-        self.fastma = bt.indicators.SimpleMovingAverage(
+        self.fastma = bt.indicators.SMA(
             self.data.close, 
             period=self.p.fast, 
-            plotname='50 day'
+            plotname='20 day'
         )
 
-        self.slowma = bt.indicators.SimpleMovingAverage(
+        self.slowma = bt.indicators.SMA(
             self.data.close, 
             period=self.p.slow, 
-            plotname='200 day'
+            plotname='30 day'
         )
 
         self.sma_crossover = bt.indicators.CrossOver(
@@ -69,6 +69,7 @@ class GoldenCross(bt.Strategy):
                          (gross_pnl, net_pnl))
 
     def next(self):
+        # print(f'sma crossover = {self.sma_crossover}')
         if self.position.size == 0:
             if self.sma_crossover > 0:
                 amount_to_invest = (self.p.order_pct * self.broker.cash)
@@ -80,4 +81,5 @@ class GoldenCross(bt.Strategy):
         if self.position.size > 0:
             if (self.sma_crossover < 0):
                 print("Sell {} shares of {} at {}".format(self.size, self.p.ticker, self.data.close[0]))
+                self.sell(size=self.size)
                 self.close()

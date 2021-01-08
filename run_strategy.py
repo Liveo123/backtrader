@@ -8,6 +8,7 @@ from strategies.strategy import TestStrategy
 from strategies.rsimean import RSIMean
 from strategies.bbands import BBands
 from strategies.stoploss import ManualStopOrStopTrail
+from strategies.sma_cross import SmaCross
 
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     # add OHLC data feed
     # feed = bt.feeds.PandasData(dataname=prices)
     feed = bt.feeds.YahooFinanceData(
-        dataname='ADBE',
+        dataname='DECK',
         # Do not pass values before this date
         fromdate=datetime.datetime(2020, 1, 1),
         # Do not pass values after this date
@@ -37,7 +38,8 @@ if __name__ == '__main__':
         "strategy": TestStrategy,
         "rsi_mean": RSIMean,
         "bbands": BBands,
-        "stop_loss": ManualStopOrStopTrail
+        "stop_loss": ManualStopOrStopTrail,
+        "sma_cross": SmaCross
     }
 
     # parse command line arguments
