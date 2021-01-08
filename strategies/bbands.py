@@ -8,12 +8,16 @@ import backtrader as bt
 
 # Create a Stratey
 class BBands(bt.Strategy):
-    params = (('BBandsperiod', 19),)
+    params = (('BBandsperiod', 10),
+              ('LastTransaction', ""), )
 
     def log(self, txt, dt=None):
         ''' Logging function fot this strategy'''
         dt = dt or self.datas[0].datetime.date(0)
-        print('%s, %s' % (dt, txt))
+        output = '%s, %s' % (dt.isoformat(), txt)
+        # print(output)
+        self.params.LastTransaction = output
+
 
     def __init__(self):
         # Keep a reference to the "close" line in the data[0] dataseries

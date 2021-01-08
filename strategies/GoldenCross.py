@@ -4,8 +4,8 @@ import pandas as pd
 import backtrader as bt
 
 class GoldenCross(bt.Strategy):
-    params = (('fast', 20),
-              ('slow', 30),
+    params = (('fast', 50),
+              ('slow', 100),
               ('order_pct', 0.95),
               ('ticker', 'SPY'))
 
