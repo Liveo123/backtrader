@@ -9,7 +9,8 @@ import backtrader as bt
 # Create a Stratey
 class BBands(bt.Strategy):
     params = (('BBandsperiod', 10),
-              ('LastTransaction', ""), )
+              ('LastTransaction', ""),
+              ('BuyLast', False))
 
     def log(self, txt, dt=None):
         ''' Logging function fot this strategy'''
@@ -88,12 +89,14 @@ class BBands(bt.Strategy):
             # Keep track of the created order to avoid a 2nd order
             self.order = self.buy()
             # self.sell(exectype=bt.Order.StopTrail, trailamount=0.02)
+            self.params.BuyLast = True
 
         if self.dataclose > self.bband.lines.top and not self.position:
             # BUY, BUY, BUY!!! (with all possible default parameters)
             self.log('BUY CREATE, %.2f' % self.dataclose[0])
             # Keep track of the created order to avoid a 2nd order
             self.order = self.buy()
+            self.params.BuyLast = True
             # self.sell(exectype=bt.Order.StopTrail, trailamount=0.02)
 
         if self.dataclose < self.bband.lines.mid and self.position and self.blueline:
@@ -103,6 +106,7 @@ class BBands(bt.Strategy):
             self.redline = False
             # Keep track of the created order to avoid a 2nd order
             self.order = self.sell()
+            self.params.BuyLast = False
 
     # def stop(self):
     #     self.log('(MA Period %2d) Ending Value %.2f' %
