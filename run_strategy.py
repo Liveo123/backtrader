@@ -45,7 +45,13 @@ if __name__ == '__main__':
                   ("GNRC",yearly, six_month), # BBB*
                   ("V", yearly, six_month),
                   ("VIPS", yearly, six_month), # BBB*
-                  ("ENVA", yearly, six_month), # BBB*
+                  ("ENVA", yearly, six_month),
+                  ("GBTC", yearly, six_month),# BBB*
+                  ("ETHE", yearly, six_month),# BBB*
+                  ("LTCN", yearly, six_month),# BBB*
+                  ("GLD", yearly, six_month),# BBB*
+                  ("FNV", yearly, six_month),# BBB*
+                  ("GOLD", yearly, six_month),# BBB*
                   )
 
     # sel_stocks = (("DECK")) # ("TTSH"), ("TSLA"))
