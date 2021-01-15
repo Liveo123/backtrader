@@ -9,8 +9,12 @@ import backtrader as bt
 # Create a Stratey
 class BBands(bt.Strategy):
     params = (('BBandsperiod', 10),
+              ('DevFactor', 2),
               ('LastTransaction', ""),
-              ('BuyLast', False))
+              ('BuyLast', False),
+              ('fast', 50),
+              ('slow', 100),
+             )
 
     def log(self, txt, dt=None):
         ''' Logging function fot this strategy'''
@@ -32,7 +36,27 @@ class BBands(bt.Strategy):
         self.blueline = None
 
         # Add a BBand indicator
-        self.bband = bt.indicators.BBands(self.datas[0], period=self.params.BBandsperiod)
+        self.bband = bt.indicators.BBands(self.datas[0],
+                                          devfactor=self.params.DevFactor,
+                                          period=self.params.BBandsperiod)
+
+        # Add SMA crossover for bull/bear detection
+        self.fastma = bt.indicators.SMA(
+            self.data.close,
+            period=self.p.fast,
+            plotname='50 day'
+        )
+
+        self.slowma = bt.indicators.SMA(
+            self.data.close,
+            period=self.p.slow,
+            plotname='100 day'
+        )
+
+        self.sma_crossover = bt.indicators.CrossOver(
+            self.fastma,
+            self.slowma
+        )
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -83,6 +107,7 @@ class BBands(bt.Strategy):
         if self.dataclose > self.bband.lines.top and self.position:
             self.blueline = True
 
+        # if self.fastma > self.slowma:
         if self.dataclose > self.bband.lines.mid and not self.position and self.redline:
             # BUY, BUY, BUY!!! (with all possible default parameters)
             self.log('BUY CREATE, %.2f' % self.dataclose[0])
@@ -97,9 +122,10 @@ class BBands(bt.Strategy):
             # Keep track of the created order to avoid a 2nd order
             self.order = self.buy()
             self.params.BuyLast = True
-            # self.sell(exectype=bt.Order.StopTrail, trailamount=0.02)
+                # self.sell(exectype=bt.Order.StopTrail, trailamount=0.02)
 
         if self.dataclose < self.bband.lines.mid and self.position and self.blueline:
+           # or self.sma_crossover < 0:
             # SELL, SELL, SELL!!! (with all possible default parameters)
             self.log('SELL CREATE, %.2f' % self.dataclose[0])
             self.blueline = False
