@@ -51,6 +51,7 @@ if __name__ == '__main__':
                   ("V", yearly, devfactor),
                   ("VIPS", yearly, devfactor), # BBB*
                   ("ENVA", yearly, devfactor),
+                  ("TWTR", yearly, devfactor),
                   # ("GBTC", yearly, six_month),# BBB*
                   # ("ETHE", yearly, six_month),# BBB*
                   # ("LTCN", yearly, six_month),# BBB*
@@ -61,9 +62,9 @@ if __name__ == '__main__':
     now = datetime.datetime.now()
     print(f"#################### STARTING {now.strftime('%H:%M:%S')} ##############\n\n")
     # sel_stocks = (("DECK")) # ("TTSH"), ("TSLA"))
-    for devfactor in [1.9, 2.0, 2.1, 2.5, 3.0]:
+    for devfactor in [2.0]: #[1.9, 2.0, 2.1, 2.5, 3.0]:
         print(f'%%%%%%%%%%%%% Devfactor {devfactor} %%%%%%%%%%%%%%%%')
-        for yearly in [6,7,8,9,10,11,12,15,18,20,22,25,30,32,35,40,45,50]:
+        for yearly in [9]: #[6,7,8,9,10,11,12,15,18,20,22,25,30,32,35,40,45,50]:
             for sel_stock in sel_stocks:
                 avg_roi = 0
                 buy_or_sell = ""
@@ -125,7 +126,7 @@ if __name__ == '__main__':
                     # if strat == 'bbands2':
                     start_date = datetime.datetime(2020, 3, 26)
                         # start_date = datetime.datetime(2016, 4, 1)
-                    end_date = datetime.datetime(2021, 1, 13)
+                    end_date = datetime.datetime(2021, 1, 27)
 
                     feed = bt.feeds.YahooFinanceData(
                         dataname=sel_stock[0],
@@ -137,7 +138,7 @@ if __name__ == '__main__':
 
                     cerebro.adddata(feed)
 
-                    #### print(f'Stock = {sel_stock[0]}, strategy = {strat}, start={start_date}')
+                    print(f'Stock = {sel_stock[0]}, strategy = {strat}, start={start_date}')
                     results = cerebro.run()
                     if strat in ['bbands1', 'bbands2']:
                         for i, strat_result in enumerate(results):
@@ -146,7 +147,7 @@ if __name__ == '__main__':
                             else:
                                 buy_or_sell += "SELL "
 
-                        #### print(buy_or_sell)
+                        print(buy_or_sell)
 
                         #     print(strat_result.params.LastTransaction)
                         # print("strat_parameters - {}: {}".format(i, strat_result.params))
@@ -157,11 +158,11 @@ if __name__ == '__main__':
 
                     # Calculate ROI
                     roi = (cerebro.broker.get_value() / START_VALUE) - 1.0
-                    # print('ROI:        {:.2f}%'.format(100.0 * roi))
+                    print('ROI:        {:.2f}%'.format(100.0 * roi))
 
                     ## Calculate Sharpe
                     sharpe = results[0].analyzers.sharpe_ratio.get_analysis()['sharperatio']
-                    # print(f'Sharpe = {sharpe}')
+                    print(f'Sharpe = {sharpe}')
 
                     ## Calculate Annual Return
                     # year_count = 0
@@ -170,11 +171,11 @@ if __name__ == '__main__':
                     #     year_count += 1
                     # AnnRet = AnnRet/year_count
                     Returns = results[0].analyzers.returns.get_analysis()['rnorm100']
-                    # print(f'Returns = {Returns}')
+                    print(f'Returns = {Returns}')
 
                     ## Calculate drawdown
                     DDown = results[0].analyzers.drawdown.get_analysis()['max']['drawdown']
-                    # print(f'DDown = {DDown}')
+                    print(f'DDown = {DDown}')
 
                     avg_roi += roi
                     # if strat == 'bbands1':
